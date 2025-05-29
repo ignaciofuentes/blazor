@@ -1,57 +1,36 @@
 ﻿@page "/weather"
-@inject HttpClient Http
+@inject AppSyncService AppSync
 
-<PageTitle>Weather</PageTitle>
+<h3>Services</h3>
 
-<h1>Weather</h1>
-
-<p>This component demonstrates fetching data from the server.</p>
-
-@if (forecasts == null)
+@if (services == null)
 {
-    <p><em>Loading...</em></p>
+    <p>Loading...</p>
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th aria-label="Temperature in Celsius">Temp. (C)</th>
-                <th aria-label="Temperature in Farenheit">Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var forecast in forecasts)
-            {
-                <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <button class="btn btn-primary" @onclick="CreateService">Click me</button>
+
+    <ul>
+        @foreach (var svc in services)
+        {
+            <li>@svc.Title - @svc.Description</li>
+        }
+    </ul>
 }
 
 @code {
-    private WeatherForecast[]? forecasts;
+    private List<Service> services;
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
+        services = await AppSync.ListServicesAsync();
     }
 
-    public class WeatherForecast
+
+    private async Task CreateService()
     {
-        public DateOnly Date { get; set; }
-
-        public int TemperatureC { get; set; }
-
-        public string? Summary { get; set; }
-
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+         await AppSync.CreateServiceAsync("Amplify","This is a great Service 123");
+         services = await AppSync.ListServicesAsync();
     }
 }
