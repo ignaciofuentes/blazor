@@ -1,0 +1,49 @@
+﻿ @page "/services"
+ @inject AppSyncService AppSync
+
+ <PageTitle>Amplify Services</PageTitle>
+
+ <h3>Amplify Services</h3>
+
+ @if (services == null)
+ {
+     <p>Loading...</p>
+ }
+ else
+ {
+     <button class="btn btn-primary" @onclick="CreateService">Click me to add data</button>
+
+     <table class="table table-striped">
+         <thead>
+             <tr>
+                 <th>Title</th>
+                 <th>Description</th>
+             </tr>
+         </thead>
+         <tbody>
+             @foreach (var svc in services)
+             {
+                 <tr>
+                     <td>@svc.Title</td>
+                     <td>@svc.Description</td>
+                 </tr>
+             }
+         </tbody>
+     </table>
+ }
+
+ @code {
+     private List<Service> services;
+
+     protected override async Task OnInitializedAsync()
+     {
+         services = await AppSync.ListServicesAsync();
+     }
+
+
+     private async Task CreateService()
+     {
+          await AppSync.CreateServiceAsync("Amplify","This is a great Service");
+          services = await AppSync.ListServicesAsync();
+     }
+ }
