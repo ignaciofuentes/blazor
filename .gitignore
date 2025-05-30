@@ -402,3 +402,4 @@ FodyWeavers.xsd
 amplify_outputs*
 amplifyconfiguration*
 dist
+.DS_Store
